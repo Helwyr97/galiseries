@@ -3,11 +3,11 @@ import Navbar from "@/components/Navbar";
 
 const MainLayout = ({ children, router }) => {
   return (
-    <Box as="main" pb="8">
+    <Box as="main">
       <Navbar path={router.asPath} />
-      <Container maxW="container.md" pt={16}>
+      <Box paddingX={10} pt={16}>
         {children}
-      </Container>
+      </Box>
     </Box>
   );
 };
