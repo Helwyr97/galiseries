@@ -20,6 +20,7 @@ const EpisodeCard = ({ id, img, title }) => {
         borderRadius="lg"
         borderStartRadius="lg"
         loading="lazy"
+        alt={"Imagen capitulo " + title}
       />
       <Stack justify="center" marginLeft={5}>
         <Heading size="lg">{title}</Heading>

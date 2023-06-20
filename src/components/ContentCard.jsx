@@ -19,6 +19,7 @@ const ContentCard = ({ id, title, img }) => {
           width={300}
           borderRadius="lg"
           loading="lazy"
+          alt={"Imagen serie " + title}
         />
         <Heading size="md" mt={5} textAlign="center">
           {title}

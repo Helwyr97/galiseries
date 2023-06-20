@@ -13,6 +13,8 @@ import {
 } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import NextLink from "next/link";
+import { useRecoilValue } from "recoil";
+import { showNavbarState } from "@/state/states";
 
 const LinkItem = ({ href, path, text }) => {
   const active = path === href;
@@ -31,6 +33,10 @@ const LinkItem = ({ href, path, text }) => {
 };
 
 const Navbar = ({ path }) => {
+  const showNavbar = useRecoilValue(showNavbarState);
+
+  if (!showNavbar) return null;
+
   return (
     <Box
       position="fixed"

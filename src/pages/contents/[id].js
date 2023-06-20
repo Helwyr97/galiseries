@@ -12,6 +12,7 @@ const Content = ({ content }) => {
           width={537}
           height={300}
           borderRadius="lg"
+          alt={"Imagen serie " + content.title}
         />
       </HStack>
       <Heading>{content.title}</Heading>
