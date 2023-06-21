@@ -11,10 +11,15 @@ const styles = {
   },
 };
 
+const colors = {
+  glassTeal: "#88ccca",
+  bgColor: "#202023",
+};
+
 const config = {
   initialColorMode: "dark",
 };
 
-const theme = extendTheme({ styles, config });
+const theme = extendTheme({ styles, config, colors });
 
 export default theme;
