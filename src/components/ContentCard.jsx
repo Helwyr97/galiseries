@@ -10,7 +10,7 @@ const ContentCard = ({ id, title, img }) => {
       boxShadow={"2xl"}
       rounded={"lg"}
       href={"/contents/" + id}
-      width={250}
+      width={340}
     >
       <CardBody>
         <CustomImage
