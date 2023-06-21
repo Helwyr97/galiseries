@@ -45,9 +45,7 @@ const secondsToHHMMSS = (seconds, ajustar) => {
   }
 };
 
-const Player = () => {
-  const router = useRouter();
-
+const Player = ({ content }) => {
   let playerRef = useRef();
   const pageRef = useRef();
   const intervalRef = useRef();
@@ -55,16 +53,12 @@ const Player = () => {
 
   const setShowNavbar = useSetRecoilState(showNavbarState);
 
-  const [content, setContent] = useState(null);
-
   const [showControls, setShowControls] = useState(true);
   const [waiting, setWaiting] = useState(false);
   const [time, setTime] = useState({ current: 0, total: 0 });
   const [muted, setMuted] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
-
-  const isM3U8 = (url) => url.slice(-4) === "m3u8";
 
   const stopPropagation = (event) => event.stopPropagation();
 
@@ -178,41 +172,7 @@ const Player = () => {
 
   // Ocultar navbar y data fetching
   useEffect(() => {
-    const fetchData = async (callback) => {
-      const { id } = router.query;
-      console.log("ID", id);
-      const { data } = await supabase
-        .from("episodes")
-        .select("*, contents (id, title, banner)")
-        .eq("id", id)
-        .limit(1)
-        .single();
-
-      const { data: prev } = await supabase
-        .from("episodes")
-        .select("id, title")
-        .eq("id", data.id - 1)
-        .eq("content_id", data.content_id)
-        .limit(1);
-
-      const { data: next } = await supabase
-        .from("episodes")
-        .select("id, title")
-        .eq("id", data.id + 1)
-        .eq("content_id", data.content_id)
-        .limit(1);
-
-      console.log(data);
-
-      callback({
-        ...data,
-        prev: prev.length === 0 ? null : prev[0],
-        next: next.length === 0 ? null : next[0],
-      });
-    };
-
     setShowNavbar(false);
-    fetchData(setContent);
 
     return () => setShowNavbar(true);
   }, []);
@@ -481,6 +441,42 @@ const Player = () => {
       </Box>
     </Box>
   );
+};
+
+export const getServerSideProps = async (context) => {
+  const { id } = context.query;
+  const { data } = await supabase
+    .from("episodes")
+    .select("*, contents (id, title, banner)")
+    .eq("id", id)
+    .limit(1)
+    .single();
+
+  if (!data) return { notFound: true };
+
+  const { data: prev } = await supabase
+    .from("episodes")
+    .select("id, title")
+    .eq("id", data.id - 1)
+    .eq("content_id", data.content_id)
+    .limit(1);
+
+  const { data: next } = await supabase
+    .from("episodes")
+    .select("id, title")
+    .eq("id", data.id + 1)
+    .eq("content_id", data.content_id)
+    .limit(1);
+
+  return {
+    props: {
+      content: {
+        ...data,
+        prev: prev.length === 0 ? null : prev[0],
+        next: next.length === 0 ? null : next[0],
+      },
+    },
+  };
 };
 
 export default Player;
