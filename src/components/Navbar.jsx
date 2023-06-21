@@ -46,8 +46,8 @@ const Navbar = ({ path }) => {
   const { isOpen, onToggle } = useDisclosure();
   const showNavbar = useRecoilValue(showNavbarState);
 
-  const user = true;
-  const isAdmin = true;
+  const user = false;
+  const isAdmin = false;
 
   const handleLogOut = () => {
     // signOut(() => setUser(null));
@@ -76,7 +76,7 @@ const Navbar = ({ path }) => {
         borderStyle={"solid"}
         align={"center"}
       >
-        <Flex mr={2} display={{ base: "flex", md: "none" }}>
+        <Flex mr={2} display={user ? { base: "flex", md: "none" } : "none"}>
           <IconButton
             onClick={onToggle}
             icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
