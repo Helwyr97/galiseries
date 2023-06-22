@@ -1,4 +1,3 @@
-import { supabase } from "@/lib/supabase";
 import { showNavbarState } from "@/state/states";
 import {
   Box,
@@ -28,7 +27,10 @@ import {
   FaVolumeMute,
 } from "react-icons/fa";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import {
+  createPagesServerClient,
+  createServerComponentClient,
+} from "@supabase/auth-helpers-nextjs";
 
 const secondsToHHMMSS = (seconds, ajustar) => {
   const hh = Math.floor(seconds / 3600);
@@ -443,8 +445,9 @@ const Player = ({ content }) => {
   );
 };
 
-export const getServerSideProps = async (context) => {
-  const { id } = context.query;
+export const getServerSideProps = async (ctx) => {
+  const { id } = ctx.query;
+  const supabase = createPagesServerClient(ctx);
   const { data } = await supabase
     .from("episodes")
     .select("*, contents (id, title, banner)")

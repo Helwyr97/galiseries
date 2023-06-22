@@ -1,7 +1,10 @@
 import EpisodeCard from "@/components/EpisodeCard";
 import { CustomImage } from "@/lib/chakraComponents";
-import { supabase } from "@/lib/supabase";
-import { Box, Heading, Text, Stack, Container, HStack } from "@chakra-ui/react";
+import { Heading, Text, Stack, Container, HStack } from "@chakra-ui/react";
+import {
+  createPagesServerClient,
+  createServerComponentClient,
+} from "@supabase/auth-helpers-nextjs";
 
 const Content = ({ content }) => {
   return (
@@ -36,8 +39,9 @@ const Content = ({ content }) => {
   );
 };
 
-export const getServerSideProps = async (context) => {
-  const { id } = context.query;
+export const getServerSideProps = async (ctx) => {
+  const { id } = ctx.query;
+  const supabase = createPagesServerClient(ctx);
   const { data } = await supabase
     .from("contents")
     .select(

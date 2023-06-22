@@ -1,5 +1,4 @@
 import ContentCard from "@/components/ContentCard";
-import { supabase } from "@/lib/supabase";
 import useDebounce from "@/lib/useDebounce";
 import { CloseIcon, SearchIcon } from "@chakra-ui/icons";
 import {
@@ -11,6 +10,7 @@ import {
   InputRightElement,
   Wrap,
 } from "@chakra-ui/react";
+import { createPagesServerClient } from "@supabase/auth-helpers-nextjs";
 import Head from "next/head";
 import { useState } from "react";
 
@@ -32,7 +32,7 @@ export default function Home({ contents }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Flex mt={1} align={"center"} justify={"center"}>
+      <Flex mt={5} align={"center"} justify={"center"}>
         <InputGroup size={"md"} width={["xs", "md", "lg"]}>
           <InputLeftAddon children={<SearchIcon />} />
           <Input
@@ -59,7 +59,8 @@ export default function Home({ contents }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(ctx) {
+  const supabase = createPagesServerClient(ctx);
   let { data } = await supabase
     .from("contents")
     .select("id, title, img")

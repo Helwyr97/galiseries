@@ -5,7 +5,7 @@ export const showNavbarState = atom({
   default: true,
 });
 
-export const userState = atom({
-  key: "userState",
+export const userRoleState = atom({
+  key: "userRoleState",
   default: null,
 });

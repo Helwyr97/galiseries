@@ -1,12 +1,26 @@
-import { createClient } from "@supabase/supabase-js";
+export const login = async (
+  supabase,
+  { email, password },
+  onSuccess,
+  onErrors,
+  onFinally
+) => {
+  try {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-// const options = {
-//   autoRefreshToken: true,
-//   persistSession: true,
-//   detectSessionInUrl: false,
-// };
+    if (error) throw error;
+    onSuccess();
+  } catch (error) {
+    if (onErrors) onErrors(error);
+  } finally {
+    if (onFinally) onFinally();
+  }
+};
 
-// export const supabase = createClient(supabaseUrl, supabaseAnonKey, options);
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const logout = async (supabase, onSuccess) => {
+  await supabase.auth.signOut();
+  onSuccess();
+};

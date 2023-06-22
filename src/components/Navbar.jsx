@@ -1,7 +1,6 @@
 import {
   Box,
   Flex,
-  Text,
   Stack,
   Link,
   Menu,
@@ -13,13 +12,16 @@ import {
   Button,
   Collapse,
   Heading,
-  VStack,
 } from "@chakra-ui/react";
 import { CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
 import NextLink from "next/link";
-import { useRecoilValue } from "recoil";
-import { showNavbarState } from "@/state/states";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { showNavbarState, userRoleState } from "@/state/states";
 import { FaUserAlt } from "react-icons/fa";
+import { logout } from "@/lib/supabase";
+import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
+import { useEffect } from "react";
+import { isAdminSelector } from "@/state/selectors";
 
 const LinkItem = ({ href, path, text }) => {
   const active = path === href;
@@ -43,19 +45,40 @@ const userPages = [{ label: "Mi Lista", to: "/mylist" }];
 const adminPages = [{ label: "Dashboard", to: "/dashboard" }];
 
 const Navbar = ({ path }) => {
+  const supabase = useSupabaseClient();
   const { isOpen, onToggle } = useDisclosure();
   const showNavbar = useRecoilValue(showNavbarState);
 
-  const user = false;
-  const isAdmin = false;
+  const supabaseUser = useUser();
+
+  const [role, setRole] = useRecoilState(userRoleState);
+  const isAdmin = useRecoilValue(isAdminSelector);
 
   const handleLogOut = () => {
-    // signOut(() => setUser(null));
+    supabase.auth.signOut();
   };
 
   const toLinkItem = (p) => (
     <LinkItem key={"link_" + p.label} href={p.to} text={p.label} path={path} />
   );
+
+  useEffect(() => {
+    const getUserInfo = async (user) => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("role: role_id ( name )")
+        .eq("user_id", user.id)
+        .limit(1)
+        .single();
+
+      if (error) return supabase.auth.signOut();
+
+      setRole(data.role.name);
+    };
+
+    if (supabaseUser && !role) getUserInfo(supabaseUser);
+    if (!supabaseUser && role) setRole(null);
+  }, [supabaseUser, role]);
 
   if (!showNavbar) return null;
 
@@ -76,7 +99,10 @@ const Navbar = ({ path }) => {
         borderStyle={"solid"}
         align={"center"}
       >
-        <Flex mr={2} display={user ? { base: "flex", md: "none" } : "none"}>
+        <Flex
+          mr={2}
+          display={supabaseUser ? { base: "flex", md: "none" } : "none"}
+        >
           <IconButton
             onClick={onToggle}
             icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
@@ -103,7 +129,7 @@ const Navbar = ({ path }) => {
           </Heading>
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
             <Stack direction={"row"} spacing={4}>
-              {user && userPages.map(toLinkItem)}
+              {supabaseUser && userPages.map(toLinkItem)}
               {isAdmin && adminPages.map(toLinkItem)}
             </Stack>
           </Flex>
@@ -114,7 +140,7 @@ const Navbar = ({ path }) => {
           direction={"row"}
           spacing={2}
         >
-          {!user ? (
+          {!supabaseUser ? (
             <>
               <Button
                 as={NextLink}
@@ -158,7 +184,7 @@ const Navbar = ({ path }) => {
 
       <Collapse in={isOpen} animateOpacity>
         <Stack p={4} display={{ md: "none" }} direction={"column"}>
-          {user && userPages.map(toLinkItem)}
+          {supabaseUser && userPages.map(toLinkItem)}
           {isAdmin && adminPages.map(toLinkItem)}
         </Stack>
       </Collapse>
