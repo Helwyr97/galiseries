@@ -5,37 +5,43 @@ import {
   createPagesServerClient,
   createServerComponentClient,
 } from "@supabase/auth-helpers-nextjs";
+import Head from "next/head";
 
 const Content = ({ content }) => {
   return (
-    <Container maxW="container.lg" p={4}>
-      <HStack justify="center">
-        <CustomImage
-          src={content.img}
-          width={537}
-          height={300}
-          borderRadius="lg"
-          alt={"Imagen serie " + content.title}
-        />
-      </HStack>
-      <Heading>{content.title}</Heading>
-      <Text>Likes: {content.likes}</Text>
-      <Text fontSize={"2xl"}>Episodes:</Text>
-      <Stack mt={4}>
-        {content.episodes.length === 0 ? (
-          <Text>Aun no hay episodios agregados</Text>
-        ) : (
-          content.episodes.map((e) => (
-            <EpisodeCard
-              key={"ep" + e.id}
-              id={e.id}
-              img={e.img}
-              title={e.title}
-            />
-          ))
-        )}
-      </Stack>
-    </Container>
+    <>
+      <Head>
+        <title>{content.title}</title>
+      </Head>
+      <Container maxW="container.lg" p={4}>
+        <HStack justify="center">
+          <CustomImage
+            src={content.img}
+            width={537}
+            height={300}
+            borderRadius="lg"
+            alt={"Imagen serie " + content.title}
+          />
+        </HStack>
+        <Heading>{content.title}</Heading>
+        <Text>Likes: {content.likes}</Text>
+        <Text fontSize={"2xl"}>Episodes:</Text>
+        <Stack mt={4}>
+          {content.episodes.length === 0 ? (
+            <Text>Aun no hay episodios agregados</Text>
+          ) : (
+            content.episodes.map((e) => (
+              <EpisodeCard
+                key={"ep" + e.id}
+                id={e.id}
+                img={e.img}
+                title={e.title}
+              />
+            ))
+          )}
+        </Stack>
+      </Container>
+    </>
   );
 };
 

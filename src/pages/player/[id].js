@@ -27,10 +27,8 @@ import {
   FaVolumeMute,
 } from "react-icons/fa";
 import Link from "next/link";
-import {
-  createPagesServerClient,
-  createServerComponentClient,
-} from "@supabase/auth-helpers-nextjs";
+import { createPagesServerClient } from "@supabase/auth-helpers-nextjs";
+import Head from "next/head";
 
 const secondsToHHMMSS = (seconds, ajustar) => {
   const hh = Math.floor(seconds / 3600);
@@ -292,156 +290,163 @@ const Player = ({ content }) => {
     );
 
   return (
-    <Box
-      ref={pageRef}
-      mt={-16}
-      mx={-10}
-      h={"100vh"}
-      w={"100vw"}
-      cursor={showControls ? "auto" : "none"}
-      userSelect={"none"}
-    >
-      <video
-        ref={playerRef}
-        controls={false}
-        style={{
-          height: "100%",
-          width: "100%",
-          margin: "0px",
-          padding: "0px",
-          backgroundColor: "black",
-        }}
-      ></video>
+    <>
+      <Head>
+        <title>
+          {content.contents.title} : {content.title}
+        </title>
+      </Head>
       <Box
-        position={"absolute"}
-        top={0}
-        left={0}
-        h={"100%"}
-        w={"100%"}
-        m={0}
-        p={0}
-        onClick={handleTogglePlay}
-        onDoubleClick={handleFullScreen}
-        onMouseLeave={hideControls}
-        onMouseEnter={_showControls}
-        onMouseMove={checkMouseMove}
+        ref={pageRef}
+        mt={-16}
+        mx={-10}
+        h={"100vh"}
+        w={"100vw"}
+        cursor={showControls ? "auto" : "none"}
+        userSelect={"none"}
       >
-        <IconButton
-          visibility={showControls ? "visible" : "hidden"}
-          opacity={showControls ? "1" : "0"}
-          transition={"all 1.5s"}
-          icon={<FaArrowLeft />}
-          size={"lg"}
-          position={"absolute"}
-          mt={2}
-          ml={2}
-          as={Link}
-          href={"/contents/" + content.id}
-        />
-        <Spinner
-          visibility={waiting ? "visible" : "hidden"}
-          size={"lg"}
-          position={"absolute"}
-          margin={"auto"}
-          left={0}
-          right={0}
-          top={0}
-          bottom={0}
-        />
+        <video
+          ref={playerRef}
+          controls={false}
+          style={{
+            height: "100%",
+            width: "100%",
+            margin: "0px",
+            padding: "0px",
+            backgroundColor: "black",
+          }}
+        ></video>
         <Box
-          visibility={showControls ? "visible" : "hidden"}
-          opacity={showControls ? "1" : "0"}
-          transition={"all 1.5s"}
           position={"absolute"}
-          bottom={0}
-          p={2}
-          w={"full"}
-          backgroundColor="blackAlpha.600"
-          onClick={stopPropagation}
-          onDoubleClick={stopPropagation}
+          top={0}
+          left={0}
+          h={"100%"}
+          w={"100%"}
+          m={0}
+          p={0}
+          onClick={handleTogglePlay}
+          onDoubleClick={handleFullScreen}
+          onMouseLeave={hideControls}
+          onMouseEnter={_showControls}
+          onMouseMove={checkMouseMove}
         >
-          <Text textAlign={"center"} fontSize={"xl"}>
-            {content.title}
-          </Text>
-          <HStack p={2}>
-            <Box minWidth={90} textAlign={"left"}>
-              {secondsToHHMMSS(time.current, time.total < 3600)}
-            </Box>
-            <Progress
-              value={time.total === 0 ? 0 : (time.current / time.total) * 100}
-              colorScheme="pink"
-              w="full"
-              onClick={seek}
-            />
-            <Box minWidth={88} textAlign={"right"}>
-              {secondsToHHMMSS(time.total, true)}
-            </Box>
-          </HStack>
-          <Flex>
-            <IconButton
-              icon={muted ? <FaVolumeMute /> : <FaVolumeUp />}
-              size={"lg"}
-              variant={"ghost"}
-              onClick={handleMute}
-            />
-            <Spacer />
-            <Tooltip label="Previous Episode" hasArrow placement="top">
+          <IconButton
+            visibility={showControls ? "visible" : "hidden"}
+            opacity={showControls ? "1" : "0"}
+            transition={"all 1.5s"}
+            icon={<FaArrowLeft />}
+            size={"lg"}
+            position={"absolute"}
+            mt={2}
+            ml={2}
+            as={Link}
+            href={"/contents/" + content.id}
+          />
+          <Spinner
+            visibility={waiting ? "visible" : "hidden"}
+            size={"lg"}
+            position={"absolute"}
+            margin={"auto"}
+            left={0}
+            right={0}
+            top={0}
+            bottom={0}
+          />
+          <Box
+            visibility={showControls ? "visible" : "hidden"}
+            opacity={showControls ? "1" : "0"}
+            transition={"all 1.5s"}
+            position={"absolute"}
+            bottom={0}
+            p={2}
+            w={"full"}
+            backgroundColor="blackAlpha.600"
+            onClick={stopPropagation}
+            onDoubleClick={stopPropagation}
+          >
+            <Text textAlign={"center"} fontSize={"xl"}>
+              {content.title}
+            </Text>
+            <HStack p={2}>
+              <Box minWidth={90} textAlign={"left"}>
+                {secondsToHHMMSS(time.current, time.total < 3600)}
+              </Box>
+              <Progress
+                value={time.total === 0 ? 0 : (time.current / time.total) * 100}
+                colorScheme="pink"
+                w="full"
+                onClick={seek}
+              />
+              <Box minWidth={88} textAlign={"right"}>
+                {secondsToHHMMSS(time.total, true)}
+              </Box>
+            </HStack>
+            <Flex>
               <IconButton
-                icon={<FaFastBackward />}
-                isDisabled={content.prev === null}
+                icon={muted ? <FaVolumeMute /> : <FaVolumeUp />}
                 size={"lg"}
                 variant={"ghost"}
-                // onClick={() => navigate('/player/episode/'+content.prev.id)}
+                onClick={handleMute}
               />
-            </Tooltip>
-            <Tooltip label="Backward" hasArrow placement="top">
+              <Spacer />
+              <Tooltip label="Previous Episode" hasArrow placement="top">
+                <IconButton
+                  icon={<FaFastBackward />}
+                  isDisabled={content.prev === null}
+                  size={"lg"}
+                  variant={"ghost"}
+                  // onClick={() => navigate('/player/episode/'+content.prev.id)}
+                />
+              </Tooltip>
+              <Tooltip label="Backward" hasArrow placement="top">
+                <IconButton
+                  icon={<FaBackward />}
+                  size={"lg"}
+                  variant={"ghost"}
+                  onClick={backward}
+                />
+              </Tooltip>
+              <Tooltip
+                label={playing ? "Pause" : "Play"}
+                hasArrow
+                placement="top"
+              >
+                <IconButton
+                  icon={playing ? <FaPause /> : <FaPlay />}
+                  size={"lg"}
+                  variant={"ghost"}
+                  onClick={handleTogglePlay}
+                />
+              </Tooltip>
+              <Tooltip label="Forward" hasArrow placement="top">
+                <IconButton
+                  icon={<FaForward />}
+                  size={"lg"}
+                  variant={"ghost"}
+                  onClick={forward}
+                />
+              </Tooltip>
+              <Tooltip label="Next Episode" hasArrow placement="top">
+                <IconButton
+                  icon={<FaFastForward />}
+                  isDisabled={content.next === null}
+                  size={"lg"}
+                  variant={"ghost"}
+                  // onClick={() => navigate('/player/episode/'+content.next.id)}
+                />
+              </Tooltip>
+              <Spacer />
               <IconButton
-                icon={<FaBackward />}
+                icon={fullscreen ? <FaCompress /> : <FaExpand />}
                 size={"lg"}
                 variant={"ghost"}
-                onClick={backward}
+                onClick={handleFullScreen}
               />
-            </Tooltip>
-            <Tooltip
-              label={playing ? "Pause" : "Play"}
-              hasArrow
-              placement="top"
-            >
-              <IconButton
-                icon={playing ? <FaPause /> : <FaPlay />}
-                size={"lg"}
-                variant={"ghost"}
-                onClick={handleTogglePlay}
-              />
-            </Tooltip>
-            <Tooltip label="Forward" hasArrow placement="top">
-              <IconButton
-                icon={<FaForward />}
-                size={"lg"}
-                variant={"ghost"}
-                onClick={forward}
-              />
-            </Tooltip>
-            <Tooltip label="Next Episode" hasArrow placement="top">
-              <IconButton
-                icon={<FaFastForward />}
-                isDisabled={content.next === null}
-                size={"lg"}
-                variant={"ghost"}
-                // onClick={() => navigate('/player/episode/'+content.next.id)}
-              />
-            </Tooltip>
-            <Spacer />
-            <IconButton
-              icon={fullscreen ? <FaCompress /> : <FaExpand />}
-              size={"lg"}
-              variant={"ghost"}
-              onClick={handleFullScreen}
-            />
-          </Flex>
+            </Flex>
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 

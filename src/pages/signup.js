@@ -1,6 +1,6 @@
 const { Box, Heading } = require("@chakra-ui/react");
 
-const MyList = () => {
+const Register = () => {
   return (
     <Box>
       <Heading>Registro</Heading>
@@ -8,4 +8,4 @@ const MyList = () => {
   );
 };
 
-export default MyList;
+export default Register;
