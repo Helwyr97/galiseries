@@ -64,3 +64,98 @@ export const logout = async (supabase, onSuccess) => {
   await supabase.auth.signOut();
   onSuccess();
 };
+
+export const followContent = async (
+  supabase,
+  { contentId, userId },
+  onSuccess,
+  onErrors,
+  onFinally
+) => {
+  try {
+    const { data, error } = await supabase
+      .from("follows")
+      .insert([{ user_id: userId, content_id: contentId }], {
+        returning: "minimal",
+      });
+
+    if (error) throw error;
+    if (onSuccess) onSuccess(data);
+  } catch (error) {
+    if (onErrors) onErrors(error);
+  } finally {
+    if (onFinally) onFinally();
+  }
+};
+
+export const unfollowContent = async (
+  supabase,
+  { contentId, userId },
+  onSuccess,
+  onErrors,
+  onFinally
+) => {
+  try {
+    const { data, error } = await supabase
+      .from("follows")
+      .delete()
+      .match(
+        { user_id: userId, content_id: contentId },
+        { returning: "minimal" }
+      );
+
+    if (error) throw error;
+    if (onSuccess) onSuccess(data);
+  } catch (error) {
+    if (onErrors) onErrors(error);
+  } finally {
+    if (onFinally) onFinally();
+  }
+};
+
+export const likeContent = async (
+  supabase,
+  { contentId, userId },
+  onSuccess,
+  onErrors,
+  onFinally
+) => {
+  try {
+    const { data, error } = await supabase
+      .from("likes")
+      .insert([{ user_id: userId, content_id: contentId }], {
+        returning: "minimal",
+      });
+    if (error) throw error;
+    if (onSuccess) onSuccess(data);
+  } catch (error) {
+    if (onErrors) onErrors(error);
+  } finally {
+    if (onFinally) onFinally();
+  }
+};
+
+export const unlikeContent = async (
+  supabase,
+  { contentId, userId },
+  onSuccess,
+  onErrors,
+  onFinally
+) => {
+  try {
+    const { data, error } = await supabase
+      .from("likes")
+      .delete()
+      .match(
+        { user_id: userId, content_id: contentId },
+        { returning: "minimal" }
+      );
+
+    if (error) throw error;
+    if (onSuccess) onSuccess(data);
+  } catch (error) {
+    if (onErrors) onErrors(error);
+  } finally {
+    if (onFinally) onFinally();
+  }
+};
