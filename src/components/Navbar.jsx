@@ -22,6 +22,7 @@ import { logout } from "@/lib/supabase";
 import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import { useEffect } from "react";
 import { isAdminSelector } from "@/state/selectors";
+import { useRouter } from "next/router";
 
 const LinkItem = ({ href, path, text }) => {
   const active = path === href;
@@ -46,6 +47,7 @@ const adminPages = [{ label: "Dashboard", to: "/dashboard" }];
 
 const Navbar = ({ path }) => {
   const supabase = useSupabaseClient();
+  const router = useRouter();
   const { isOpen, onToggle } = useDisclosure();
   const showNavbar = useRecoilValue(showNavbarState);
 
@@ -54,8 +56,10 @@ const Navbar = ({ path }) => {
   const [role, setRole] = useRecoilState(userRoleState);
   const isAdmin = useRecoilValue(isAdminSelector);
 
-  const handleLogOut = () => {
-    supabase.auth.signOut();
+  const handleLogOut = async () => {
+    await supabase.auth.signOut();
+    if (path === "/mylist") router.push("/");
+    if (path === "/contents") router.reload();
   };
 
   const toLinkItem = (p) => (
