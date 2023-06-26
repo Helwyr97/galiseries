@@ -1,8 +1,10 @@
+import Carousel from "@/components/Carousel";
 import ContentCard from "@/components/ContentCard";
 import useDebounce from "@/lib/useDebounce";
 import { CloseIcon, SearchIcon } from "@chakra-ui/icons";
 import {
   Flex,
+  Heading,
   IconButton,
   Input,
   InputGroup,
@@ -17,6 +19,8 @@ export default function Home({ contents }) {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
 
+  // const mostLiked = contents.sort((a, b) => b.likes - a.likes).slice(0, 5);
+
   const handleSearchChange = (e) => setSearch(e.target.value);
   const handleReset = () => {
     if (search === "") return;
@@ -25,7 +29,7 @@ export default function Home({ contents }) {
 
   return (
     <>
-      <Flex mt={5} align={"center"} justify={"center"}>
+      <Flex mt={5} align={"center"} justify={"center"} direction={"column"}>
         <InputGroup size={"md"} width={["xs", "md", "lg"]}>
           <InputLeftAddon children={<SearchIcon />} />
           <Input
@@ -38,30 +42,32 @@ export default function Home({ contents }) {
             <IconButton icon={<CloseIcon />} onClick={handleReset} />
           </InputRightElement>
         </InputGroup>
+        <Wrap p={5} spacing={8} align="center" justify="center">
+          {contents
+            .filter((c) =>
+              c.title.toLowerCase().includes(debouncedSearch.toLowerCase())
+            )
+            .map((c) => (
+              <ContentCard key={c.id} id={c.id} title={c.title} img={c.img} />
+            ))}
+        </Wrap>
       </Flex>
-      <Wrap p={5} spacing={8} align="center" justify="center">
-        {contents
-          .filter((c) =>
-            c.title.toLowerCase().includes(debouncedSearch.toLowerCase())
-          )
-          .map((c) => (
-            <ContentCard key={c.id} id={c.id} title={c.title} img={c.img} />
-          ))}
-      </Wrap>
     </>
   );
 }
 
 export async function getServerSideProps(ctx) {
   const supabase = createPagesServerClient(ctx);
-  let { data } = await supabase
+  const { data: contents } = await supabase
     .from("contents")
-    .select("id, title, img")
+    .select("id, title, img, likes: likes(count)")
     .order("title");
+
+  const res = contents.map((c) => ({ ...c, likes: c.likes[0].count }));
 
   return {
     props: {
-      contents: data,
+      contents: res,
     },
   };
 }

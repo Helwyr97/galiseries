@@ -11,6 +11,7 @@ const ContentCard = ({ id, title, img }) => {
       rounded={"lg"}
       href={"/contents/" + id}
       width={340}
+      minWidth={340}
     >
       <CardBody>
         <CustomImage
