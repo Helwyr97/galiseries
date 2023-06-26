@@ -1,10 +1,8 @@
-import Carousel from "@/components/Carousel";
 import ContentCard from "@/components/ContentCard";
 import useDebounce from "@/lib/useDebounce";
 import { CloseIcon, SearchIcon } from "@chakra-ui/icons";
 import {
   Flex,
-  Heading,
   IconButton,
   Input,
   InputGroup,
