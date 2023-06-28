@@ -32,8 +32,12 @@ import Head from "next/head";
 import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import { addLastWatched } from "@/lib/supabase";
 import { secondsToHHMMSS } from "@/lib/auxFunctions";
+import { useRouter } from "next/router";
 
 const Player = ({ content }) => {
+  const router = useRouter();
+  const startTime = router.query.time;
+
   let playerRef = useRef();
   const pageRef = useRef();
   const intervalRef = useRef();
@@ -102,14 +106,14 @@ const Player = ({ content }) => {
       event.target.role === "progressbar"
         ? (event.pageX - left) / ((width / event.target.ariaValueNow) * 100)
         : (event.pageX - left) / width;
-    const currentAudio = playerRef.current;
+    const currentVideo = playerRef.current;
 
-    if (currentAudio !== null) {
-      const newCurrent = currentAudio.duration * percent;
-      currentAudio.currentTime = newCurrent;
+    if (currentVideo !== null) {
+      const newCurrent = currentVideo.duration * percent;
+      currentVideo.currentTime = newCurrent;
       setTime({
         current: newCurrent,
-        total: currentAudio.duration,
+        total: currentVideo.duration,
       });
     }
   };
@@ -186,7 +190,7 @@ const Player = ({ content }) => {
     const video = playerRef.current;
     if (!video) return;
 
-    const defaultOptions = {};
+    // const defaultOptions = {};
 
     if (video.canPlayType("application/vnd.apple.mpegurl")) {
       video.src = content.url;
@@ -199,6 +203,9 @@ const Player = ({ content }) => {
       console.error(
         "This is an old browser that does not support MSE https://developer.mozilla.org/en-US/docs/Web/API/Media_Source_Extensions_API"
       );
+    }
+    if (startTime) {
+      video.currentTime = startTime;
     }
   }, [content, playerRef]);
 

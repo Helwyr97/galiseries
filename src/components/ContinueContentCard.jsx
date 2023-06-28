@@ -34,7 +34,7 @@ const ContinueContentCard = ({ content, episode, time, onDelete }) => {
   };
 
   return (
-    <Card bg="blackAlpha.600" boxShadow={"2xl"} rounded={"lg"}>
+    <Card bg="blackAlpha.600" boxShadow={"2xl"} rounded={"lg"} minWidth={550}>
       <CardBody>
         <HStack justifyContent="space-between" gap={5}>
           <CustomImage
