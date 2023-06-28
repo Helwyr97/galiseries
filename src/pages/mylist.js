@@ -4,7 +4,6 @@ import { createPagesServerClient } from "@supabase/auth-helpers-nextjs";
 const { Box, Heading, Wrap, Text } = require("@chakra-ui/react");
 
 const MyList = ({ list }) => {
-  console.log(list);
   return (
     <Box mt={5}>
       <Heading textAlign="center">Miña lista</Heading>

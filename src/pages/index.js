@@ -1,21 +1,33 @@
 import ContentCard from "@/components/ContentCard";
+import ContinueContentCard from "@/components/ContinueContentCard";
 import useDebounce from "@/lib/useDebounce";
 import { CloseIcon, SearchIcon } from "@chakra-ui/icons";
 import {
+  Box,
+  Divider,
   Flex,
+  HStack,
+  Heading,
   IconButton,
   Input,
   InputGroup,
   InputLeftAddon,
   InputRightElement,
+  Text,
   Wrap,
 } from "@chakra-ui/react";
 import { createPagesServerClient } from "@supabase/auth-helpers-nextjs";
+import { useUser } from "@supabase/auth-helpers-react";
 import { useState } from "react";
 
-export default function Home({ contents }) {
+export default function Home({ contents, continueWatchingOrig }) {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
+
+  const [continueWatching, setContinueWatching] =
+    useState(continueWatchingOrig);
+
+  const user = useUser();
 
   // const mostLiked = contents.sort((a, b) => b.likes - a.likes).slice(0, 5);
 
@@ -25,10 +37,33 @@ export default function Home({ contents }) {
     setSearch("");
   };
 
+  console.log(continueWatching);
+
   return (
     <>
       <Flex mt={5} align={"center"} justify={"center"} direction={"column"}>
-        <InputGroup size={"md"} width={["xs", "md", "lg"]}>
+        {user && continueWatching.length > 0 && (
+          <>
+            <Heading>Seguir vendo</Heading>
+            <Wrap p={5} spacing={8} align="center" justify="center">
+              {continueWatching.map((p) => (
+                <ContinueContentCard
+                  key={"ep" + p.episode.id}
+                  content={p.content}
+                  episode={p.episode}
+                  time={p.time}
+                  onDelete={(id) =>
+                    setContinueWatching((cur) =>
+                      cur.filter((c) => c.content.id !== id)
+                    )
+                  }
+                />
+              ))}
+            </Wrap>
+            <Divider />
+          </>
+        )}
+        <InputGroup size={"md"} width={["xs", "md", "lg"]} mt={5}>
           <InputLeftAddon children={<SearchIcon />} />
           <Input
             type="text"
@@ -63,9 +98,27 @@ export async function getServerSideProps(ctx) {
 
   const res = contents.map((c) => ({ ...c, likes: c.likes[0].count }));
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let continueWatching = [];
+
+  if (user) {
+    const { data } = await supabase
+      .from("progress")
+      .select(
+        "time, content: content_id(id, title, img), episode: last_watched(id, title, img)"
+      )
+      .eq("user_id", user.id)
+      .order("timestamp", { ascending: false });
+    continueWatching = data;
+  }
+
   return {
     props: {
       contents: res,
+      continueWatchingOrig: continueWatching,
     },
   };
 }

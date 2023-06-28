@@ -159,3 +159,39 @@ export const unlikeContent = async (
     if (onFinally) onFinally();
   }
 };
+
+export const addLastWatched = async (
+  supabase,
+  { user_id, content_id, episode_id, time }
+) => {
+  const { data } = await supabase
+    .from("progress")
+    .select("last_watched, time")
+    .eq("user_id", user_id)
+    .eq("content_id", content_id)
+    .limit(1);
+
+  if (data.length === 0) {
+    console.log("CREATE");
+    await supabase
+      .from("progress")
+      .insert({
+        user_id,
+        content_id,
+        last_watched: episode_id,
+        time,
+        timestamp: Date.now(),
+      });
+  } else {
+    const current = data[0];
+
+    if (current.last_watched !== episode_id || current.time !== time) {
+      console.log("UPDATE");
+      await supabase
+        .from("progress")
+        .update({ last_watched: episode_id, time, timestamp: Date.now() })
+        .eq("user_id", user_id)
+        .eq("content_id", content_id);
+    }
+  }
+};

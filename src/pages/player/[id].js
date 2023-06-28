@@ -29,27 +29,18 @@ import {
 import Link from "next/link";
 import { createPagesServerClient } from "@supabase/auth-helpers-nextjs";
 import Head from "next/head";
-
-const secondsToHHMMSS = (seconds, ajustar) => {
-  const hh = Math.floor(seconds / 3600);
-  const mm = Math.floor(seconds / 60) % 60;
-  const ss = Math.floor(seconds % 60);
-
-  if (ajustar) {
-    return [hh, mm, ss]
-      .map((v) => (v < 10 ? "0" + v : v))
-      .filter((v, i) => v !== "00" || i > 0)
-      .join(":");
-  } else {
-    return [hh, mm, ss].map((v) => (v < 10 ? "0" + v : v)).join(":");
-  }
-};
+import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
+import { addLastWatched } from "@/lib/supabase";
+import { secondsToHHMMSS } from "@/lib/auxFunctions";
 
 const Player = ({ content }) => {
   let playerRef = useRef();
   const pageRef = useRef();
   const intervalRef = useRef();
   const mouseTimeout = useRef();
+
+  const user = useUser();
+  const supabase = useSupabaseClient();
 
   const setShowNavbar = useSetRecoilState(showNavbarState);
 
@@ -170,12 +161,23 @@ const Player = ({ content }) => {
     }, 100);
   };
 
-  // Ocultar navbar y data fetching
+  // Ocultar navbar y guardar progreso si hay usuario
   useEffect(() => {
     setShowNavbar(false);
 
     return () => setShowNavbar(true);
   }, []);
+
+  useEffect(() => {
+    if (user.id && Math.floor(time.current) % 30 === 0) {
+      addLastWatched(supabase, {
+        user_id: user.id,
+        content_id: content.content_id,
+        episode_id: content.id,
+        time: Math.floor(time.current),
+      });
+    }
+  }, [time.current, user.id, content.content_id, content.id]);
 
   // Load player
   useEffect(() => {
@@ -340,7 +342,7 @@ const Player = ({ content }) => {
             mt={2}
             ml={2}
             as={Link}
-            href={"/contents/" + content.id}
+            href={"/contents/" + content.content_id}
           />
           <Spinner
             visibility={waiting ? "visible" : "hidden"}

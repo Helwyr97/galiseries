@@ -172,8 +172,6 @@ export const getServerSideProps = async (ctx) => {
     content["followed"] = followed[0].count > 0;
   }
 
-  console.log(content);
-
   return {
     props: {
       content,
