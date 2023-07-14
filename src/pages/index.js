@@ -1,8 +1,9 @@
 import Carousel from "@/components/Carousel";
 import ContentCard from "@/components/ContentCard";
 import ContinueContentCard from "@/components/ContinueContentCard";
+import GoTopBtn from "@/components/GoTopBtn";
 import useDebounce from "@/lib/useDebounce";
-import { ChevronUpIcon, CloseIcon, SearchIcon } from "@chakra-ui/icons";
+import { CloseIcon, SearchIcon } from "@chakra-ui/icons";
 import {
   Flex,
   Heading,
@@ -32,11 +33,6 @@ export default function Home({ contents, continueWatchingOrig }) {
   const handleReset = () => {
     if (search === "") return;
     setSearch("");
-  };
-
-  const goTop = () => {
-    document.body.scrollTop = 0;
-    document.documentElement.scrollTop = 0;
   };
 
   return (
@@ -84,14 +80,7 @@ export default function Home({ contents, continueWatchingOrig }) {
             ))}
         </Wrap>
       </Flex>
-      <IconButton
-        icon={<ChevronUpIcon />}
-        position="fixed"
-        bottom={5}
-        right={5}
-        size="lg"
-        onClick={goTop}
-      />
+      <GoTopBtn />
     </>
   );
 }

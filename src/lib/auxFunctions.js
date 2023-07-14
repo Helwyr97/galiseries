@@ -12,3 +12,8 @@ export const secondsToHHMMSS = (seconds, ajustar) => {
     return [hh, mm, ss].map((v) => (v < 10 ? "0" + v : v)).join(":");
   }
 };
+
+export const goTop = () => {
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+};

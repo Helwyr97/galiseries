@@ -1,4 +1,5 @@
 import EpisodeCard from "@/components/EpisodeCard";
+import GoTopBtn from "@/components/GoTopBtn";
 import { CustomImage } from "@/lib/chakraComponents";
 import {
   followContent,
@@ -133,6 +134,7 @@ const Content = ({ content }) => {
             ))
           )}
         </Stack>
+        <GoTopBtn />
       </Container>
     </>
   );
