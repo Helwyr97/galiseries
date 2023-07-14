@@ -2,19 +2,15 @@ import Carousel from "@/components/Carousel";
 import ContentCard from "@/components/ContentCard";
 import ContinueContentCard from "@/components/ContinueContentCard";
 import useDebounce from "@/lib/useDebounce";
-import { CloseIcon, SearchIcon } from "@chakra-ui/icons";
+import { ChevronUpIcon, CloseIcon, SearchIcon } from "@chakra-ui/icons";
 import {
-  Box,
-  Divider,
   Flex,
-  HStack,
   Heading,
   IconButton,
   Input,
   InputGroup,
   InputLeftAddon,
   InputRightElement,
-  Text,
   Wrap,
 } from "@chakra-ui/react";
 import { createPagesServerClient } from "@supabase/auth-helpers-nextjs";
@@ -38,7 +34,10 @@ export default function Home({ contents, continueWatchingOrig }) {
     setSearch("");
   };
 
-  console.log(continueWatching);
+  const goTop = () => {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  };
 
   return (
     <>
@@ -85,6 +84,14 @@ export default function Home({ contents, continueWatchingOrig }) {
             ))}
         </Wrap>
       </Flex>
+      <IconButton
+        icon={<ChevronUpIcon />}
+        position="fixed"
+        bottom={5}
+        right={5}
+        size="lg"
+        onClick={goTop}
+      />
     </>
   );
 }

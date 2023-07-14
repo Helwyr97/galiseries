@@ -16,7 +16,7 @@ const Carousel = ({ children }) => {
       justifyContent="space-between"
       alignItems="center"
       position="relative"
-      marginBottom={{ base: 5, sm: 0 }}
+      marginBottom={{ base: 5, sm: 2 }}
     >
       <IconButton
         size="lg"
@@ -35,7 +35,7 @@ const Carousel = ({ children }) => {
       />
       <Text
         position="absolute"
-        bottom={{ base: -7, sm: 0 }}
+        bottom={{ base: -7, sm: -4 }}
         width="100%"
         textAlign="center"
       >
