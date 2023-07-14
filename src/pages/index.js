@@ -1,3 +1,4 @@
+import Carousel from "@/components/Carousel";
 import ContentCard from "@/components/ContentCard";
 import ContinueContentCard from "@/components/ContinueContentCard";
 import useDebounce from "@/lib/useDebounce";
@@ -44,8 +45,8 @@ export default function Home({ contents, continueWatchingOrig }) {
       <Flex mt={5} align={"center"} justify={"center"} direction={"column"}>
         {user && continueWatching.length > 0 && (
           <>
-            <Heading>Seguir vendo</Heading>
-            <Wrap p={5} spacing={8} align="center" justify="center">
+            <Heading mb={1}>Seguir vendo</Heading>
+            <Carousel>
               {continueWatching.map((p) => (
                 <ContinueContentCard
                   key={"ep" + p.episode.id}
@@ -59,8 +60,7 @@ export default function Home({ contents, continueWatchingOrig }) {
                   }
                 />
               ))}
-            </Wrap>
-            <Divider />
+            </Carousel>
           </>
         )}
         <InputGroup size={"md"} width={["xs", "md", "lg"]} mt={5}>
