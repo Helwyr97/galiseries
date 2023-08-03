@@ -7,8 +7,6 @@ import {
   Card,
   CardBody,
   Heading,
-  HStack,
-  VStack,
   IconButton,
   Tooltip,
   Stack,
@@ -24,8 +22,8 @@ const ContinueContentCard = ({ content, episode, time, onDelete }) => {
   const supabase = useSupabaseClient();
   const user = useUser();
 
-  const imgH = useBreakpointValue({ base: 84, md: 168 });
-  const imgW = useBreakpointValue({ base: 150, md: 300 });
+  const imgH = useBreakpointValue({ base: 84, lg: 168 });
+  const imgW = useBreakpointValue({ base: 150, lg: 300 });
 
   const handleOpenPlayer = () => router.push(playerUrl);
 
@@ -43,14 +41,14 @@ const ContinueContentCard = ({ content, episode, time, onDelete }) => {
       bg="blackAlpha.600"
       boxShadow={"2xl"}
       rounded={"lg"}
-      minWidth={{ base: null, sm: 550, md: 700 }}
+      minWidth={{ base: null, lg: 700 }}
       maxWidth={{ base: 200, sm: null }}
     >
       <CardBody>
         <Stack
           justifyContent="space-between"
           gap={{ base: 1, sm: 5 }}
-          direction={{ base: "column", sm: "row" }}
+          direction={{ base: "column", lg: "row" }}
           alignItems="center"
         >
           <CustomImage
@@ -62,17 +60,21 @@ const ContinueContentCard = ({ content, episode, time, onDelete }) => {
             alt={"Imaxen serie " + content.title}
           />
           <Box>
-            <Heading noOfLines={2} size={{ base: "md", sm: "xl" }}>
+            <Heading noOfLines={2} size={{ base: "md", lg: "xl" }}>
               {content.title}
             </Heading>
-            <Text noOfLines={1} size={{ base: "md", sm: "xl" }}>
+            <Text noOfLines={1} size={{ base: "md", lg: "xl" }}>
               {episode.title}
+            </Text>
+            <Text noOfLines={1} size={{ base: "sm", lg: "md" }}>
+              {secondsToHHMMSS(time, true)}
             </Text>
           </Box>
 
-          <Heading size="sm">{secondsToHHMMSS(time, true)}</Heading>
-
-          <HStack justifyContent="space-between">
+          <Stack
+            justifyContent="space-between"
+            direction={{ base: "row", lg: "column" }}
+          >
             <Tooltip
               hasArrow
               label="Quitar de seguir vendo"
@@ -80,7 +82,7 @@ const ContinueContentCard = ({ content, episode, time, onDelete }) => {
               color="black"
             >
               <IconButton
-                size="lg"
+                size={{ base: "md", lg: "lg" }}
                 icon={<DeleteIcon />}
                 colorScheme="red"
                 onClick={handleDelete}
@@ -88,13 +90,13 @@ const ContinueContentCard = ({ content, episode, time, onDelete }) => {
             </Tooltip>
             <Tooltip hasArrow label="Seguir vendo">
               <IconButton
-                size="lg"
+                size={{ base: "md", lg: "lg" }}
                 icon={<FaPlay />}
                 colorScheme="blue"
                 onClick={handleOpenPlayer}
               />
             </Tooltip>
-          </HStack>
+          </Stack>
         </Stack>
       </CardBody>
     </Card>

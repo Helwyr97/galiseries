@@ -13,15 +13,16 @@ const Carousel = ({ children }) => {
     <Flex
       borderColor="white"
       width="100%"
-      justifyContent="space-between"
+      justifyContent="space-evenly"
       alignItems="center"
       position="relative"
       marginBottom={{ base: 5, sm: 2 }}
+      height={80}
     >
       <IconButton
         size="lg"
         icon={<ChevronLeftIcon />}
-        height={60}
+        height={"50%"}
         onClick={prev}
         isDisabled={max === 1}
       />
@@ -29,7 +30,7 @@ const Carousel = ({ children }) => {
       <IconButton
         size="lg"
         icon={<ChevronRightIcon />}
-        height={60}
+        height={"50%"}
         onClick={next}
         isDisabled={max === 1}
       />

@@ -12,9 +12,7 @@ const MainLayout = ({ children, router }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar path={router.asPath} />
-      <Box paddingX={10} pt={16}>
-        {children}
-      </Box>
+      <Box pt={16}>{children}</Box>
     </Box>
   );
 };

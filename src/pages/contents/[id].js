@@ -119,6 +119,8 @@ const Content = ({ content }) => {
             />
           </HStack>
         )}
+        {/* AÑADIR CONTINUE WATCHING */}
+
         <Text fontSize={"2xl"}>Episodes:</Text>
         <Stack mt={4}>
           {content.episodes.length === 0 ? (
@@ -172,6 +174,14 @@ export const getServerSideProps = async (ctx) => {
 
     content["liked"] = liked[0].count > 0;
     content["followed"] = followed[0].count > 0;
+
+    const { data: continueWatching } = await supabase
+      .from("progress")
+      .select("time, episode: last_watched(id, title, img)")
+      .eq("user_id", user.id)
+      .eq("content_id", id);
+
+    content["continueWatching"] = continueWatching[0] ?? null;
   }
 
   return {
