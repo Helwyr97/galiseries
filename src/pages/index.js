@@ -59,7 +59,9 @@ export default function Home({ contents, continueWatchingOrig }) {
           </>
         )}
         <InputGroup size={"md"} width={["xs", "md", "lg"]} mt={5}>
-          <InputLeftAddon children={<SearchIcon />} />
+          <InputLeftAddon>
+            <SearchIcon />
+          </InputLeftAddon>
           <Input
             type="text"
             placeholder="Titulo"

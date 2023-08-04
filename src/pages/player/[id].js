@@ -170,7 +170,7 @@ const Player = ({ content }) => {
     setShowNavbar(false);
 
     return () => setShowNavbar(true);
-  }, []);
+  }, [setShowNavbar]);
 
   useEffect(() => {
     if (user.id && Math.floor(time.current) % 30 === 0) {
@@ -181,7 +181,7 @@ const Player = ({ content }) => {
         time: Math.floor(time.current),
       });
     }
-  }, [time.current, user.id, content.content_id, content.id]);
+  }, [time, user.id, content.content_id, content.id, supabase]);
 
   // Load player
   useEffect(() => {
@@ -207,7 +207,7 @@ const Player = ({ content }) => {
     if (startTime) {
       video.currentTime = startTime;
     }
-  }, [content, playerRef]);
+  }, [content, playerRef, startTime]);
 
   // FullScreen Events
   useEffect(() => {
