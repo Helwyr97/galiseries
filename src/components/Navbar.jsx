@@ -82,7 +82,7 @@ const Navbar = ({ path }) => {
 
     if (supabaseUser && !role) getUserInfo(supabaseUser);
     if (!supabaseUser && role) setRole(null);
-  }, [supabaseUser, role]);
+  }, [supabaseUser, role, setRole, supabase]);
 
   if (!showNavbar) return null;
 
