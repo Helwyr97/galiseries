@@ -173,6 +173,8 @@ const Player = ({ content }) => {
   }, [setShowNavbar]);
 
   useEffect(() => {
+    if (!user) return;
+
     if (user.id && Math.floor(time.current) % 30 === 0) {
       addLastWatched(supabase, {
         user_id: user.id,
@@ -181,7 +183,7 @@ const Player = ({ content }) => {
         time: Math.floor(time.current),
       });
     }
-  }, [time, user.id, content.content_id, content.id, supabase]);
+  }, [time, user, content.content_id, content.id, supabase]);
 
   // Load player
   useEffect(() => {
@@ -288,7 +290,6 @@ const Player = ({ content }) => {
       <Flex
         backgroundColor="black"
         mt={-16}
-        mx={-10}
         h={"100vh"}
         w={"100vw"}
         justifyContent="center"
@@ -308,7 +309,6 @@ const Player = ({ content }) => {
       <Box
         ref={pageRef}
         mt={-16}
-        mx={-10}
         h={"100vh"}
         w={"100vw"}
         cursor={showControls ? "auto" : "none"}
